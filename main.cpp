@@ -8,9 +8,12 @@
 #include <fstream>
 #include <cstdlib>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <errno.h>
 #include <sstream>
+#include <string.h>
+
 using namespace std;
 
 
@@ -38,6 +41,7 @@ int main(int argc, char const *argv[]){
 	listaComandos.push_back("clear");
 	listaComandos.push_back("exit");
 	listaComandos.push_back("cat");
+	listaComandos.push_back("chmod");
 	string ingreso;
 	while(true){
 		if (verificacion){
@@ -50,7 +54,27 @@ int main(int argc, char const *argv[]){
 		if (find(listaComandos.begin(),listaComandos.end(),ingreso) != listaComandos.end()){
 			/* code */
 			if (ingreso=="mkdir"){
-				
+				string dirName;
+				char fileName[100];
+				cin >> dirName;
+				stringstream ss;
+				ss << currentDirectory << dirName;
+				ss >> fileName;
+			    mkdir(fileName , S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+			    verificacion = false;
+
+			}else if(ingreso=="chmod"){
+				char nombreArchivo[300];
+				cin >> nombreArchivo;
+				cout << "Permissions: ";
+				string permissions;
+				cin >> permissions;		
+				ofstream permissionsFile;
+				permissionsFile.open ("permissions.txt",std::ios_base::app);
+				permissionsFile << nombreArchivo << ',' << permissions << '\n';
+				permissionsFile.close();
+				verificacion = false;
+
 			}else if(ingreso=="cd"){
 				string nuevo;
 				cin>>nuevo;
@@ -75,6 +99,23 @@ int main(int argc, char const *argv[]){
 				stringstream ss;
 				ss<<currentDirectory<<nombreArchivo;
 				ss>>nombreArchivo;
+				string concatName;
+
+				string lineV;
+				ifstream archivoV(nombreArchivo, ios::in);
+				//archivo.open();
+				if (archivoV.is_open()){
+					while(getline(archivoV,lineV)){
+						//tokenize here
+					}
+					archivoV.close();
+				}
+
+
+				/*Example: rwx
+				if string[0] == r then continue executing cat, else cout << "No tiene permiso de lectura"
+				*/
+
 				string line;
 				ifstream archivo(nombreArchivo, ios::in);
 				//archivo.open();
