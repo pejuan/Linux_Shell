@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
+#include <sstream>
 using namespace std;
 
 
@@ -30,12 +31,13 @@ int main(int argc, char const *argv[]){
 	
 	vector<string> listaComandos;
 	bool verificacion = true;
-	string currentDirectory = "/home/pejuan/";
+	string currentDirectory = "/home/";
 	listaComandos.push_back("mkdir");
 	listaComandos.push_back("cd");
 	listaComandos.push_back("ls");
 	listaComandos.push_back("clear");
 	listaComandos.push_back("exit");
+	listaComandos.push_back("cat");
 	string ingreso;
 	while(true){
 		if (verificacion){
@@ -48,7 +50,7 @@ int main(int argc, char const *argv[]){
 		if (find(listaComandos.begin(),listaComandos.end(),ingreso) != listaComandos.end()){
 			/* code */
 			if (ingreso=="mkdir"){
-
+				
 			}else if(ingreso=="cd"){
 				string nuevo;
 				cin>>nuevo;
@@ -67,6 +69,22 @@ int main(int argc, char const *argv[]){
 				{
 				cout << files[i] << endl;
 				}
+			}else if(ingreso=="cat"){
+				char nombreArchivo[300];
+				cin >> nombreArchivo;
+				stringstream ss;
+				ss<<currentDirectory<<nombreArchivo;
+				ss>>nombreArchivo;
+				string line;
+				ifstream archivo(nombreArchivo, ios::in);
+				//archivo.open();
+				if (archivo.is_open()){
+					while(getline(archivo,line)){
+						cout<<line<<endl;
+					}
+					archivo.close();
+				}
+				verificacion = false;
 			}else if(ingreso=="exit"){
 				break;
 			}
