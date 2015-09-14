@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <sstream>
 #include <string.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -134,6 +135,9 @@ int main(int argc, char const *argv[]){
 					cout<<endl<<endl;
 				}
 			}else if(substring=="rmdir"){
+				string carpeta = ingreso.substr(cont+1,ingreso.size());
+				string path = currentDirectory+carpeta;
+				rmdir(path.c_str());
 
 			}else if(ingreso=="ls"){
 				string dir = currentDirectory;
