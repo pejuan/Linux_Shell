@@ -30,6 +30,24 @@ int getdir (string dir, vector<string> &files){
 	closedir(dp);
 	return 0;
 }
+bool contains(char* comando, vector<string> listaComandos){
+	for (int i = 0; i < listaComandos.size(); ++i){
+		if (!strcmp(comando,listaComandos[i].c_str())){
+			return true;
+		}
+
+	}
+	return false;
+}
+bool containsStr(string comando, vector<string> listaComandos){
+	for (int i = 0; i < listaComandos.size(); ++i){
+		if (comando==listaComandos[i]){
+			return true;
+		}
+
+	}
+	return false;
+}
 int main(int argc, char const *argv[]){
 	
 	vector<string> listaComandos;
@@ -43,6 +61,8 @@ int main(int argc, char const *argv[]){
 	listaComandos.push_back("cat");
 	listaComandos.push_back("chmod");
 	string ingreso;
+	int cont;
+	string substring = "nada";
 	while(true){
 		if (verificacion){
 			cout<<"mi_sh@"<<currentDirectory<<">";
@@ -50,8 +70,31 @@ int main(int argc, char const *argv[]){
 			
 		}
 		
-		getline(cin,ingreso);
-		if (find(listaComandos.begin(),listaComandos.end(),ingreso) != listaComandos.end()){
+		if (verificacion){
+			/* code */
+			getline(cin,ingreso);
+			cont = 0;
+			for (int i = 0; i < ingreso.size(); i++){
+				if (ingreso[i] == ' '){
+					break;
+				}else{
+					cont++;
+				}
+			}
+			substring = ingreso.substr(0,cont);
+		}
+		
+		//cout<<substring<<endl;
+		
+		//cin>>ingreso;
+		/*char* wholeCommand = new char[ingreso.length()+1];
+		strcpy (wholeCommand, ingreso.c_str());
+		char * pch;
+		pch = strtok (wholeCommand," ");
+		//cout<<wholeCommand<<endl;
+		cout<<pch<<endl;*/
+
+		if (containsStr(substring,listaComandos) && verificacion){
 			/* code */
 			if (ingreso=="mkdir"){
 				string dirName;
@@ -75,15 +118,17 @@ int main(int argc, char const *argv[]){
 				permissionsFile.close();
 				verificacion = false;
 
-			}else if(ingreso=="cd"){
-				string nuevo;
-				cin>>nuevo;
-				currentDirectory += (nuevo+"/");
+			}else if(substring=="cd"){
+				string carpeta = ingreso.substr(cont+1,ingreso.size());
+				//cout<<substring2<<endl;
+				//string nuevo;
+				//cin>>nuevo;
+				currentDirectory += (carpeta+"/");
 				verificacion = false;
 
 			}else if(ingreso=="clear"){
 				for (int i = 0; i < 25; i++){
-					cout<<endl;
+					cout<<endl<<endl;
 				}
 			}else if(ingreso=="ls"){
 				string dir = currentDirectory;
@@ -115,7 +160,6 @@ int main(int argc, char const *argv[]){
 				/*Example: rwx
 				if string[0] == r then continue executing cat, else cout << "No tiene permiso de lectura"
 				*/
-
 				string line;
 				ifstream archivo(nombreArchivo, ios::in);
 				//archivo.open();
