@@ -85,16 +85,6 @@ int main(int argc, char const *argv[]){
 			}
 			substring = ingreso.substr(0,cont);
 		}
-		
-		//cout<<substring<<endl;
-		
-		//cin>>ingreso;
-		/*char* wholeCommand = new char[ingreso.length()+1];
-		strcpy (wholeCommand, ingreso.c_str());
-		char * pch;
-		pch = strtok (wholeCommand," ");
-		//cout<<wholeCommand<<endl;
-		cout<<pch<<endl;*/
 
 		if (containsStr(substring,listaComandos) && verificacion){
 			/* code */
@@ -148,27 +138,17 @@ int main(int argc, char const *argv[]){
 				cout << files[i] << endl;
 				}
 			}else if(ingreso=="cat"){
-				char nombreArchivo[300];
-				cin >> nombreArchivo;
+				cout<<"Al comando le faltan argumentos"<<endl;
+			}else if(substring=="cat"){
+				
+				string nameArch = ingreso.substr(cont+1,ingreso.size());
+				char nombreArchivo[200];
+				//cin >> nombreArchivo;
+				strcpy(nombreArchivo, nameArch.c_str());
 				stringstream ss;
 				ss<<currentDirectory<<nombreArchivo;
 				ss>>nombreArchivo;
 				string concatName;
-
-				string lineV;
-				ifstream archivoV(nombreArchivo, ios::in);
-				//archivo.open();
-				if (archivoV.is_open()){
-					while(getline(archivoV,lineV)){
-						//tokenize here
-					}
-					archivoV.close();
-				}
-
-
-				/*Example: rwx
-				if string[0] == r then continue executing cat, else cout << "No tiene permiso de lectura"
-				*/
 				string line;
 				ifstream archivo(nombreArchivo, ios::in);
 				//archivo.open();
