@@ -60,6 +60,7 @@ int main(int argc, char const *argv[]){
 	listaComandos.push_back("exit");
 	listaComandos.push_back("cat");
 	listaComandos.push_back("chmod");
+	listaComandos.push_back("rmdir");
 	string ingreso;
 	int cont;
 	string substring = "nada";
@@ -96,10 +97,10 @@ int main(int argc, char const *argv[]){
 
 		if (containsStr(substring,listaComandos) && verificacion){
 			/* code */
-			if (ingreso=="mkdir"){
-				string dirName;
+			if (substring=="mkdir"){
+				string dirName = ingreso.substr(cont+1,ingreso.size());
 				char fileName[100];
-				cin >> dirName;
+				/////////////cin >> dirName;
 				stringstream ss;
 				ss << currentDirectory << dirName;
 				ss >> fileName;
@@ -118,6 +119,8 @@ int main(int argc, char const *argv[]){
 				permissionsFile.close();
 				verificacion = false;
 
+			}else if(ingreso=="cd"){
+				currentDirectory = "/home/";
 			}else if(substring=="cd"){
 				string carpeta = ingreso.substr(cont+1,ingreso.size());
 				//cout<<substring2<<endl;
@@ -130,6 +133,8 @@ int main(int argc, char const *argv[]){
 				for (int i = 0; i < 25; i++){
 					cout<<endl<<endl;
 				}
+			}else if(substring=="rmdir"){
+
 			}else if(ingreso=="ls"){
 				string dir = currentDirectory;
 				vector<string> files = vector<string>();
