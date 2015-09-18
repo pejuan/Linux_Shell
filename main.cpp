@@ -178,6 +178,7 @@ int main(int argc, char const *argv[]){
 				for (int i = 0; i < 25; i++){
 					cout<<endl<<endl;
 				}
+				cout << "\e[H\e[2J";
 			}else if(ingreso=="rmdir"){
 
 
