@@ -51,6 +51,25 @@ bool containsStr(string comando, vector<string> listaComandos){
 	}
 	return false;
 }
+int filter(const struct dirent *dir){
+	uid_t user;
+	struct stat dirinfo;
+	int len = strlen(dir->d_name) + 7; 
+	char path[len];
+
+	strcpy(path, "/proc/");
+	strcat(path, dir->d_name);
+	user = getuid();
+	if (stat(path, &dirinfo) < 0) {
+	perror("processdir() ==> stat()");
+	exit(EXIT_FAILURE);
+	}
+	return !fnmatch("[1-9]*", dir->d_name, 0) && user == dirinfo.st_uid;
+}
+
+void processdir(const struct dirent *dir){
+     puts(dir->d_name);
+}
 int main(int argc, char const *argv[]){
 
 	pid_t pid;
@@ -128,11 +147,31 @@ int main(int argc, char const *argv[]){
 				currentDirectory = "/home/";
 			}else if(substring=="cd"){
 				string carpeta = ingreso.substr(cont+1,ingreso.size());
-				//cout<<substring2<<endl;
-				//string nuevo;
-				//cin>>nuevo;
-				currentDirectory += (carpeta+"/");
-				verificacion = false;
+				if (carpeta == ".."){
+					int counterslash = 0;
+					for (int i = 0; i < currentDirectory.size(); ++i){
+						if(currentDirectory[i]=='/')
+							counterslash++;
+					}
+					int counterletter = 0;
+					int counterslash2 = 0;
+					for (int i = 0; i < currentDirectory.size(); ++i){
+						if ((counterslash-1)==counterslash2){
+							break;
+						}else if(currentDirectory[i]=='/'){
+							counterslash2++;
+						}
+						counterletter++;
+
+					}
+					string substri = currentDirectory.substr(0,counterletter);
+					currentDirectory = substri;
+
+				}else{
+					currentDirectory += (carpeta+"/");
+					verificacion = false;
+				}
+				
 
 			}else if(ingreso=="clear"){
 				//limpia la consola
@@ -184,16 +223,15 @@ int main(int argc, char const *argv[]){
 			}else if(substring=="rm"){
 				//elimina un archivo
 				string nameArch = ingreso.substr(cont+1,ingreso.size());
-				string path = currentDirectory+carpeta;
+				string path = currentDirectory+nameArch;
 
 				if( remove( path.c_str() ) != 0 )
 				    perror( "Error deleting file" );
 				else
 				    puts( "File successfully deleted" );
-				break;
+				
 			}else if(ingreso=="ln"){
 				//ln –s: crea rutas simbolicas y duras
-				break;
 			}else if(ingreso=="ps"){
 				//ps –a –u –x -e: imprime la lista de los procesos
 				struct dirent **namelist;
@@ -209,13 +247,13 @@ int main(int argc, char const *argv[]){
 				  	}
 				  	free(namelist);
 			    }
-				break;
+				
 			}else if(ingreso=="uname"){
 				//uname –a –r -m -s: muestra información general del sistema
-				break;
+				
 			}else if(ingreso=="kill"){
 				//kill -9 process_id (debe usar la llamada al sistema signal())
-				break;
+				
 			}else if(ingreso=="exit"){
 				//se sale de la sesión de consola
 				break;
@@ -234,25 +272,9 @@ int main(int argc, char const *argv[]){
 
 	}
 
-	void processdir(const struct dirent *dir){
-	     puts(dir->d_name);
-	}
 
-	int filter(const struct dirent *dir){
-	     uid_t user;
-	     struct stat dirinfo;
-	     int len = strlen(dir->d_name) + 7; 
-	     char path[len];
 
-	     strcpy(path, "/proc/");
-	     strcat(path, dir->d_name);
-	     user = getuid();
-	     if (stat(path, &dirinfo) < 0) {
-		  perror("processdir() ==> stat()");
-		  exit(EXIT_FAILURE);
-	     }
-	     return !fnmatch("[1-9]*", dir->d_name, 0) && user == dirinfo.st_uid;
-	}
+	
 
 
 	return 0;
