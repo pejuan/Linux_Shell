@@ -14,6 +14,8 @@
 #include <sstream>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <fnmatch.h>
 
 using namespace std;
 
@@ -50,6 +52,11 @@ bool containsStr(string comando, vector<string> listaComandos){
 	return false;
 }
 int main(int argc, char const *argv[]){
+
+	pid_t pid;
+
+	int fd[2];
+	pipe(fd);
 	
 	vector<string> listaComandos;
 	bool verificacion = true;
@@ -62,6 +69,11 @@ int main(int argc, char const *argv[]){
 	listaComandos.push_back("cat");
 	listaComandos.push_back("chmod");
 	listaComandos.push_back("rmdir");
+	listaComandos.push_back("rm");
+	listaComandos.push_back("ln");
+	listaComandos.push_back("ps");
+	listaComandos.push_back("uname");
+	listaComandos.push_back("kill");
 	string ingreso;
 	int cont;
 	string substring = "nada";
@@ -89,6 +101,7 @@ int main(int argc, char const *argv[]){
 		if (containsStr(substring,listaComandos) && verificacion){
 			/* code */
 			if (substring=="mkdir"){
+				//crea un directorio con ruta absoluta o relativa
 				string dirName = ingreso.substr(cont+1,ingreso.size());
 				char fileName[100];
 				/////////////cin >> dirName;
@@ -99,6 +112,7 @@ int main(int argc, char const *argv[]){
 			    verificacion = false;
 
 			}else if(ingreso=="chmod"){
+				//cambia el acceso a un archivo específico.
 				char nombreArchivo[300];
 				cin >> nombreArchivo;
 				cout << "Permissions: ";
@@ -109,8 +123,8 @@ int main(int argc, char const *argv[]){
 				permissionsFile << nombreArchivo << ',' << permissions << '\n';
 				permissionsFile.close();
 				verificacion = false;
-
 			}else if(ingreso=="cd"){
+				//cambiar de directorio
 				currentDirectory = "/home/";
 			}else if(substring=="cd"){
 				string carpeta = ingreso.substr(cont+1,ingreso.size());
@@ -121,15 +135,20 @@ int main(int argc, char const *argv[]){
 				verificacion = false;
 
 			}else if(ingreso=="clear"){
+				//limpia la consola
 				for (int i = 0; i < 25; i++){
 					cout<<endl<<endl;
 				}
+			}else if(ingreso=="rmdir"){
+
+
 			}else if(substring=="rmdir"){
+				//elimina un directorio si este esta vacio
 				string carpeta = ingreso.substr(cont+1,ingreso.size());
 				string path = currentDirectory+carpeta;
 				rmdir(path.c_str());
-
 			}else if(ingreso=="ls"){
+				//crea rutas simbolicas y duras
 				string dir = currentDirectory;
 				vector<string> files = vector<string>();
 				getdir(dir,files);
@@ -140,7 +159,8 @@ int main(int argc, char const *argv[]){
 			}else if(ingreso=="cat"){
 				cout<<"Al comando le faltan argumentos"<<endl;
 			}else if(substring=="cat"){
-				
+				//Imprime los datos de un archivo en la consola o redirecciona la entrada de datos a un archivo. 
+				//Use tambien este comando para crear un archivo usando ctrl-d para el EOF
 				string nameArch = ingreso.substr(cont+1,ingreso.size());
 				char nombreArchivo[200];
 				//cin >> nombreArchivo;
@@ -159,7 +179,45 @@ int main(int argc, char const *argv[]){
 					archivo.close();
 				}
 				verificacion = false;
+			}else if(ingreso=="rm"){
+				cout<<"Al comando le faltan argumentos"<<endl;
+			}else if(substring=="rm"){
+				//elimina un archivo
+				string nameArch = ingreso.substr(cont+1,ingreso.size());
+				string path = currentDirectory+carpeta;
+
+				if( remove( path.c_str() ) != 0 )
+				    perror( "Error deleting file" );
+				else
+				    puts( "File successfully deleted" );
+				break;
+			}else if(ingreso=="ln"){
+				//ln –s: crea rutas simbolicas y duras
+				break;
+			}else if(ingreso=="ps"){
+				//ps –a –u –x -e: imprime la lista de los procesos
+				struct dirent **namelist;
+			    int n;
+
+			    n = scandir("/proc", &namelist, filter, 0);
+			    if (n < 0)
+				  perror("Not enough memory.");
+			    else {
+				    while(n--) {
+				       	processdir(namelist[n]);
+				       	free(namelist[n]);
+				  	}
+				  	free(namelist);
+			    }
+				break;
+			}else if(ingreso=="uname"){
+				//uname –a –r -m -s: muestra información general del sistema
+				break;
+			}else if(ingreso=="kill"){
+				//kill -9 process_id (debe usar la llamada al sistema signal())
+				break;
 			}else if(ingreso=="exit"){
+				//se sale de la sesión de consola
 				break;
 			}
 		}else{
@@ -174,6 +232,26 @@ int main(int argc, char const *argv[]){
 			
 		}
 
+	}
+
+	void processdir(const struct dirent *dir){
+	     puts(dir->d_name);
+	}
+
+	int filter(const struct dirent *dir){
+	     uid_t user;
+	     struct stat dirinfo;
+	     int len = strlen(dir->d_name) + 7; 
+	     char path[len];
+
+	     strcpy(path, "/proc/");
+	     strcat(path, dir->d_name);
+	     user = getuid();
+	     if (stat(path, &dirinfo) < 0) {
+		  perror("processdir() ==> stat()");
+		  exit(EXIT_FAILURE);
+	     }
+	     return !fnmatch("[1-9]*", dir->d_name, 0) && user == dirinfo.st_uid;
 	}
 
 
