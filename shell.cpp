@@ -167,36 +167,59 @@ int main(int argc, char const *argv[])
 		else if(ingreso=="cd"){
 				//cambiar de directorio
 				currentDirectory = "/Users/jmlb/";
-			}else if(substring=="cd"){
-				string carpeta = ingreso.substr(cont+1,ingreso.size());
-				if (carpeta == ".."){
-					int counterslash = 0;
-					for (int i = 0; i < currentDirectory.size(); ++i){
-						if(currentDirectory[i]=='/')
-							counterslash++;
-					}
-					int counterletter = 0;
-					int counterslash2 = 0;
-					for (int i = 0; i < currentDirectory.size(); ++i){
-						if ((counterslash-1)==counterslash2){
-							break;
-						}else if(currentDirectory[i]=='/'){
-							counterslash2++;
-						}
-						counterletter++;
-
-					}
-					string substri = currentDirectory.substr(0,counterletter);
-					currentDirectory = substri;
-
-				}else{
-					currentDirectory += (carpeta+"/");
+		}else if(substring=="cd"){
+			string carpeta = ingreso.substr(cont+1,ingreso.size());
+			if (carpeta == ".."){
+				int counterslash = 0;
+				for (int i = 0; i < currentDirectory.size(); ++i){
+					if(currentDirectory[i]=='/')
+						counterslash++;
 				}
-				
+				int counterletter = 0;
+				int counterslash2 = 0;
+				for (int i = 0; i < currentDirectory.size(); ++i){
+					if ((counterslash-1)==counterslash2){
+						break;
+					}else if(currentDirectory[i]=='/'){
+						counterslash2++;
+					}
+					counterletter++;
 
+				}
+				string substri = currentDirectory.substr(0,counterletter);
+				currentDirectory = substri;
+			}else{
+				currentDirectory += (carpeta+"/");
+			}
+		}
+		else if (substring == "chmod")
+		{
+			int c =0;
+			string substring2 = ingreso.substr(cont+1,ingreso.size()); //permiso y nombre de archivo
+			for (int i = 0; i < substring2.size(); ++i)
+			{
+				if (substring2[i] == ' ')
+				{
+					break;
+				}
+				else{
+					c++;
+				}
+			}
+			string permission = substring2.substr(0, c);
+			string archivo = substring2.substr(c+1,substring2.size());
+			string concat = permission + '~' + currentDirectory + archivo; 
+
+			if (!fork()) {
+				string ejecutable = CDIR;
+				char* todo[] = {(char*) concat.c_str(), (char*)0};
+				string comando = ejecutable + "/chmod";
+				//ejecutable += "/ls";
+				execv(comando.c_str(),todo);
 			}
 
-	}
+		}
+	} // fin while true
 	
 	return 0;
 }
