@@ -16,7 +16,7 @@ typedef void (*sighandler_t)(int);
 //function to handle signal
 void handle_signal(int signo)
 {
-	printf("\nSHELL %s $  ",gpath);
+	printf("\nmi_sh@%s>",gpath);
 	fflush(stdout);
 }
 //function for single pipe implementation
@@ -433,6 +433,7 @@ int single_output_redirect(char *s1,char *s2)
         wait(&status);
 
 }
+
 int main()
 {
     char str[1024];
@@ -451,7 +452,7 @@ int main()
     strcat(hispath,"/m_history.txt");
     signal(SIGINT, SIG_IGN);
 	signal(SIGINT, handle_signal);
-	printf("\nSHELL %s $  ",gpath);
+	printf("\nmi_sh@%s>",gpath);
 	int ofd,rfd;
 	//int count=0;
 	while(fgets(str,1024,stdin)!=NULL)
@@ -750,7 +751,7 @@ int main()
                          simple_implementation(s[0],0);
                  }
            }
-            printf("SHELL %s $  ",gpath);
+            printf("mi_sh@%s>",gpath);
 
 	}
 }
