@@ -17,6 +17,9 @@
 #include <sys/utsname.h>
 #include <stdlib.h>
 #include <fnmatch.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <ctype.h>
 
 using namespace std;
 
@@ -40,8 +43,182 @@ bool containsStr(string comando, vector<string> listaComandos){
 	return false;
 }
 
-char CDIR[1024]; 
+int salida_a_pipe(char *s[],char *outred,int n)
+{
+    int pip[2*n];
+    for(int i=0;i<2*n;i=i+2)
+    {
+        pipe(pip+i);
+    }
+    int status;
+    int out;
+    char *dest=strtok(outred," ");
+    out = open(dest, O_WRONLY | O_TRUNC | O_CREAT|O_APPEND,0700);
+    for(int j=0;j<n+1;j++)
+    {
+        char *t;
+        char *argv[1024];
+        t=strtok(s[j]," ");
+        argv[0]=t;
+        int m=1;
+        while(t!=NULL)
+        {
+        t=strtok(NULL," ");
+        if(t==NULL)
+            break;
+        argv[m]=t;
+        m++;
+        }
+        argv[m]=NULL;
+        if(fork()==0)
+        {
+            if(j==0)
+            {
+                dup2(pip[1],1);
+                for(int k=0;k<2*n;k++)
+                    close(pip[k]);
+                 execvp(*argv, argv);
+            }
+           else if(j==n)
+            {
+                dup2(pip[2*n-2],0);
+                dup2(out,1);
 
+                    for(int k=0;k<2*n;k++)
+                    close(pip[k]);
+                  close(out);
+                 execvp(*argv, argv);
+            }
+            else
+            {
+                dup2(pip[2*j+1],1);
+                dup2(pip[2*(j-1)],0);
+                for(int k=0;k<2*n;k++)
+                    close(pip[k]);
+                 execvp(*argv, argv);
+            }
+        }
+    }
+     for(int k=0;k<2*n;k++)
+        close(pip[k]);
+     close(out);
+    for(int k=0;k<2*n-1;k++)
+        wait(&status);
+}
+
+int redireccion_de_salida_unica(char *s1,char *s2)
+{
+    char *t=strtok(s1," ");
+    char *argv[100];
+    argv[0]=t;
+    int i=1,status;
+    while(t!=NULL)
+    {
+        t=strtok(NULL," ");
+        if(t==NULL)
+            break;
+        argv[i]=t;
+        i++;
+    }
+    argv[i]=NULL;
+    char *dest=s2;
+    int out;
+    out = open(dest, O_WRONLY | O_TRUNC | O_CREAT|O_APPEND,0700);
+    if (fork() == 0)
+    {
+        dup2(out,1);
+        close(out);
+        execvp(*argv,argv);
+    }
+
+     close(out);
+  for (int i = 0; i < 1; i++)
+    wait(&status);
+
+}
+ int entrada_pipe_salida(char *inred,char *p,char *s[],char *outred,int n)
+ {
+    int in,status;
+    char *inargv[100];
+    char *t3=strtok(inred," ");
+    inargv[0]=t3;
+    int k=1;
+    while(t3!=NULL)
+    {
+        t3=strtok(NULL," ");
+        if(t3==NULL)
+            break;
+        inargv[k]=t3;
+        k++;
+    }
+    inargv[k]=NULL;
+    char *path=strtok(p," ");
+    in=open(path,O_RDONLY);
+    int pip[2*n];
+    for(int i=0;i<2*n;i=i+2)
+    {
+        pipe(pip+i);
+    }
+    int out;
+    char *dest=strtok(outred," ");
+    out = open(dest, O_WRONLY | O_TRUNC | O_CREAT|O_APPEND,0700);
+    for(int j=0;j<n+1;j++)
+    {
+        char *t;
+        char *argv[1024];
+        t=strtok(s[j]," ");
+        argv[0]=t;
+        int m=1;
+        while(t!=NULL)
+        {
+        t=strtok(NULL," ");
+        if(t==NULL)
+            break;
+        argv[m]=t;
+        m++;
+        }
+        argv[m]=NULL;
+        if(fork()==0)
+        {
+            if(j==0)
+            {
+               dup2(in,0);
+               dup2(pip[1],1);
+                for(int k=0;k<2*n;k++)
+                    close(pip[k]);
+                close(in);
+                 execvp(*inargv,inargv);
+            }
+           else if(j==n)
+            {
+                dup2(pip[2*n-2],0);
+                dup2(out,1);
+
+                    for(int k=0;k<2*n;k++)
+                    close(pip[k]);
+                  close(out);
+                 execvp(*argv, argv);
+            }
+            else
+            {
+                dup2(pip[2*j+1],1);
+                dup2(pip[2*(j-1)],0);
+                for(int k=0;k<2*n;k++)
+                    close(pip[k]);
+                 execvp(*argv, argv);
+            }
+        }
+    }
+     for(int k=0;k<2*n;k++)
+        close(pip[k]);
+    close(in);
+    close(out);
+    for(int k=0;k<2*n-1;k++)
+        wait(&status);
+
+}
+
+char CDIR[1024]; 
 
 int main(int argc, char const *argv[])
 {
@@ -199,7 +376,7 @@ int main(int argc, char const *argv[])
 		}
 		else if(ingreso=="cd"){
 				//cambiar de directorio
-				currentDirectory = "/Users/jmlb/";
+				currentDirectory = "/Users/jmlb/"; //getenv("HOME"); deberia de retornar el home dir, no funciona en macos
 		}else if(substring=="cd"){
 			string carpeta = ingreso.substr(cont+1,ingreso.size());
 			if (carpeta == ".."){
