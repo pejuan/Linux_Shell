@@ -148,6 +148,27 @@ int main(int argc, char const *argv[])
 				execv(ejecutable.c_str(),fileName);
 			}
 		}
+		else if (ingreso == "ps")
+		{
+			if (!fork()) {
+				execlp("ps","ps",NULL);
+			}
+		}
+		else if (substring == "ps")
+		{
+			string dirName = ingreso.substr(cont+1,ingreso.size());
+			char* bandera[] = {(char*) dirName.c_str(), (char*)0};
+			
+			if (!fork()) {
+				string ejecutable = CDIR;
+				ejecutable += "/ps";
+				execv(ejecutable.c_str(),bandera);
+			}
+		}
+		else if (ingreso == "rm")
+		{
+			cout << "Faltan argumentos, uso: rm nombre_archivo" << endl;	
+		}	
 		else if (substring == "rm")
 		{
 			string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
