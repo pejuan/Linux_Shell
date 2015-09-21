@@ -54,7 +54,7 @@ int main(int argc, char const *argv[])
 	
 	vector<string> listaComandos;
 	bool verificacion = true;
-	string currentDirectory = "/Users/jmlb/";
+	//string currentDirectory = "/Users/jmlb/";
 	listaComandos.push_back("mkdir");
 	listaComandos.push_back("cd");
 	listaComandos.push_back("ls");
@@ -73,6 +73,7 @@ int main(int argc, char const *argv[])
 	int cont;
 	string substring = "nada";
 	getcwd(CDIR,sizeof(CDIR));
+	string currentDirectory = CDIR; //Añadiendo esto para que el currentDirectory sea dinamico -jc
 
 	while(true){
 
@@ -147,6 +148,17 @@ int main(int argc, char const *argv[])
 				execv(ejecutable.c_str(),fileName);
 			}
 		}
+		else if (substring == "rm")
+		{
+			string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
+			char* fileName[] = {(char*) dirName.c_str(), (char*)0};
+			
+			if (!fork()) {
+				string ejecutable = CDIR;
+				ejecutable += "/rm";
+				execv(ejecutable.c_str(),fileName);
+			}
+		}
 		else if (ingreso == "uname")
 		{
 			struct utsname sysinfo;
@@ -217,7 +229,6 @@ int main(int argc, char const *argv[])
 				//ejecutable += "/ls";
 				execv(comando.c_str(),todo);
 			}
-
 		}
 	} // fin while true
 	

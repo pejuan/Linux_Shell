@@ -18,3 +18,13 @@
 #include <fnmatch.h>
 
 using namespace std;
+
+
+int main(int argc, char const *argv[])
+{
+	if( remove( argv[0] ) != 0 )
+	    perror( "Error deleting file" );
+	else
+	    puts( "File successfully deleted" );
+	return 0;
+}
