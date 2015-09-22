@@ -307,28 +307,19 @@ int main(int argc, char const *argv[])
                         execv(comando.c_str(),todo);
                     }
                 }
+                else if(substringPipe == "kill"){
+                string procName = comandosPipe[i].substr(8,comandosPipe[i].size());
+
+                char* todo[] = {(char*) procName.c_str(), (char*)0};
                 
-                
-                
+                if (!fork()) {
+                    string ejecutable = CDIR;
+                    ejecutable += "/kill";
+                    execv(ejecutable.c_str(),todo);
+                }
+            }
             } // fin for vergueo pipes
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
             
         }else{//No hay multicomando
             if (substring ==  "mkdir")
@@ -500,6 +491,16 @@ int main(int argc, char const *argv[])
                     string comando = ejecutable + "/chmod";
                     //ejecutable += "/ls";
                     execv(comando.c_str(),todo);
+                }
+            }
+            else if(substring == "kill"){
+                string procName = ingreso.substr(8,ingreso.size());
+                char* todo[] = {(char*) procName.c_str(), (char*)0};
+                
+                if (!fork()) {
+                    string ejecutable = CDIR;
+                    ejecutable += "/kill";
+                    execv(ejecutable.c_str(),todo);
                 }
             }
         }// fin else de todo el vergueo
