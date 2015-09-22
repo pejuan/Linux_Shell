@@ -185,7 +185,7 @@ int main(int argc, char const *argv[])
 		{
 			struct utsname sysinfo;
 			uname(&sysinfo);
-			cout << "System Name: "<<sysinfo.sysname<<endl;//S
+			cout << sysinfo.sysname<<endl;//S
 		}
 		else if (substring == "uname")
 		{
