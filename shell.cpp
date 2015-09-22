@@ -74,6 +74,7 @@ int main(int argc, char const *argv[])
         hayPipe = false;
         cout<<"mi_sh@"<<currentDirectory<<"> ";
         comandosPipe.clear();
+        cmdSizes.clear();
         getline(cin,ingreso);
         cont = 0;
         for (int i = 0; i < ingreso.size(); i++){
@@ -120,10 +121,7 @@ int main(int argc, char const *argv[])
             {
                 comandosPipe.push_back(ingreso.substr(posPipes[i-1]+2,cmdSizes[i]-2));
             }*/
-            for (int i = 0; i < comandosPipe.size(); ++i)
-            {
-                cout<<comandosPipe[i]<<endl;
-            }
+            
             
             for (int i = 0; i < comandosPipe.size(); ++i){
                 
