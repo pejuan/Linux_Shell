@@ -27,8 +27,47 @@ int main(int argc, char const *argv[])
 	//Imprime los datos de un archivo en la consola o redirecciona la entrada de datos a un archivo.
 	//Use tambien este comando para crear un archivo usando ctrl-d para el EOF
 
-  char CDIR[1024];
+  	char CDIR[1024];
 	//cout << getcwd(CDIR,sizeof(CDIR)) << endl;
+  	//cout<<"YUPIII"<<loquerecibo<<"FinYUPI"<<endl;
+
+  	string argumento = argv[0];
+	vector<string> ruta;
+	vector<string> archivos;
+	char* duplicado = strdup(argumento.c_str());
+	char* token = strtok(duplicado, "¿");
+	while(token != NULL){
+		ruta.push_back(string(token));
+		// the call is treated as a subsequent calls to strtok:
+		// the function continues from where it left in previous invocation
+		token = strtok(NULL, "¿");
+	}
+
+	bool entro = false;
+	string Arch = ruta[1];
+	for (int i = 0; i < Arch.size(); ++i)
+	{
+		if (Arch[i]=='>')
+		{
+			entro = true;
+			break;
+		}
+	}
+	if (entro)
+	{
+		char* duplicado2 = strdup(Arch.c_str());
+		char* token2 = strtok(duplicado2, ">");
+		while(token2 != NULL){
+			archivos.push_back(ruta[0]+string(token2));
+			// the call is treated as a subsequent calls to strtok:
+			// the function continues from where it left in previous invocation
+			token2 = strtok(NULL, ">");
+		}
+
+	}
+	cout<<endl<<archivos[0]<<endl<<archivos[1]<<endl;
+	
+
 
 	char recibo[200] = "origen.txt>dos.txt";
 	//string recibo = argv[1];
