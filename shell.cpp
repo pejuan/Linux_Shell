@@ -63,6 +63,7 @@ int main(int argc, char const *argv[])
 	string substring = "nada";
 	getcwd(CDIR,sizeof(CDIR));
 	string currentDirectory = CDIR; //Añadiendo esto para que el currentDirectory sea dinamico -jc
+    currentDirectory += "/"
 
 	while(true){
 
