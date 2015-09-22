@@ -20,8 +20,8 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <ctype.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+//#include <readline/readline.h>
+//#include <readline/history.h>
 
 using namespace std;
 bool contains(char* comando, vector<string> listaComandos);
@@ -39,10 +39,10 @@ char CDIR[1024];
 int main(int argc, char const *argv[])
 {
     pid_t pid;
-    
+
     int fd[2];
     pipe(fd);
-    
+
     vector<string> listaComandos;
     bool verificacion = true;
     //string currentDirectory = "/Users/jmlb/";
@@ -59,7 +59,7 @@ int main(int argc, char const *argv[])
     listaComandos.push_back("ps");
     listaComandos.push_back("uname");
     listaComandos.push_back("kill");
-    
+
     string ingreso;
     int cont;
     string substring = "nada";
@@ -124,10 +124,10 @@ int main(int argc, char const *argv[])
             {
                 cout<<comandosPipe[i]<<endl;
             }
-            
+
             for (int i = 0; i < comandosPipe.size(); ++i){
-                
-                
+
+
                 int contp = 0;
                 for (int j = 0; j < comandosPipe[j].size(); j++){
                     if (comandosPipe[i][j] == ' '){
@@ -137,30 +137,30 @@ int main(int argc, char const *argv[])
                     }
                 }
                 substringPipe = comandosPipe[i].substr(0,contp);
-                
+
                 if (substringPipe ==  "mkdir")
                 {
                     string dirName = currentDirectory + comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         ejecutable += "/mkdir";
                         execv(ejecutable.c_str(),fileName);
                     }
-                    
+
                 }
                 else if (substringPipe == "cat")
                 {
                     string dirName = currentDirectory + comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         ejecutable += "/cat";
                         execv(ejecutable.c_str(),fileName);
                     }
-                    
+
                 }
                 else if(comandosPipe[i]=="exit"){
                     //se sale de la sesión de consola
@@ -175,7 +175,7 @@ int main(int argc, char const *argv[])
                 }
                 else if (comandosPipe[i] =="ls")
                 {
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         char* directory[] = {(char*) currentDirectory.c_str(), (char*)0};
@@ -188,7 +188,7 @@ int main(int argc, char const *argv[])
                 {
                     string dirName = currentDirectory + comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         ejecutable += "/rmdir";
@@ -199,7 +199,7 @@ int main(int argc, char const *argv[])
                 {
                     string dirName = currentDirectory + comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         ejecutable += "/rmdirR";
@@ -216,7 +216,7 @@ int main(int argc, char const *argv[])
                 {
                     string dirName = comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     char* bandera[] = {(char*) dirName.c_str(), (char*)0};
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         ejecutable += "/ps";
@@ -231,7 +231,7 @@ int main(int argc, char const *argv[])
                 {
                     string dirName = currentDirectory + comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         ejecutable += "/rm";
@@ -248,7 +248,7 @@ int main(int argc, char const *argv[])
                 {
                     string dirName = comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     char* bandera[] = {(char*) dirName.c_str(), (char*)0};
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         ejecutable += "/uname";
@@ -275,7 +275,7 @@ int main(int argc, char const *argv[])
                                 counterslash2++;
                             }
                             counterletter++;
-                            
+
                         }
                         string substri = currentDirectory.substr(0,counterletter);
                         currentDirectory = substri;
@@ -300,7 +300,7 @@ int main(int argc, char const *argv[])
                     string permission = substringPipe2.substr(0, c);
                     string archivo = substringPipe2.substr(c+1,substringPipe2.size());
                     string concat = permission + '~' + currentDirectory + archivo;
-                    
+
                     if (!fork()) {
                         string ejecutable = CDIR;
                         char* todo[] = {(char*) concat.c_str(), (char*)0};
@@ -309,53 +309,53 @@ int main(int argc, char const *argv[])
                         execv(comando.c_str(),todo);
                     }
                 }
-                
-                
-                
+
+
+
             } // fin for vergueo pipes
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }else{//No hay multicomando
             if (substring ==  "mkdir")
             {
                 string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
                 char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/mkdir";
                     execv(ejecutable.c_str(),fileName);
                 }
-                
+
             }
             else if (substring == "cat")
             {
                 string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
                 char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/cat";
                     execv(ejecutable.c_str(),fileName);
                 }
-                
+
             }
             else if(ingreso=="exit"){
                 //se sale de la sesión de consola
@@ -370,7 +370,7 @@ int main(int argc, char const *argv[])
             }
             else if (ingreso =="ls")
             {
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     char* directory[] = {(char*) currentDirectory.c_str(), (char*)0};
@@ -383,7 +383,7 @@ int main(int argc, char const *argv[])
             {
                 string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
                 char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/rmdir";
@@ -394,7 +394,7 @@ int main(int argc, char const *argv[])
             {
                 string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
                 char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/rmdirR";
@@ -411,7 +411,7 @@ int main(int argc, char const *argv[])
             {
                 string dirName = ingreso.substr(cont+1,ingreso.size());
                 char* bandera[] = {(char*) dirName.c_str(), (char*)0};
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/ps";
@@ -426,7 +426,7 @@ int main(int argc, char const *argv[])
             {
                 string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
                 char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/rm";
@@ -443,7 +443,7 @@ int main(int argc, char const *argv[])
             {
                 string dirName = ingreso.substr(cont+1,ingreso.size());
                 char* bandera[] = {(char*) dirName.c_str(), (char*)0};
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/uname";
@@ -470,7 +470,7 @@ int main(int argc, char const *argv[])
                             counterslash2++;
                         }
                         counterletter++;
-                        
+
                     }
                     string substri = currentDirectory.substr(0,counterletter);
                     currentDirectory = substri;
@@ -495,7 +495,7 @@ int main(int argc, char const *argv[])
                 string permission = substring2.substr(0, c);
                 string archivo = substring2.substr(c+1,substring2.size());
                 string concat = permission + '~' + currentDirectory + archivo;
-                
+
                 if (!fork()) {
                     string ejecutable = CDIR;
                     char* todo[] = {(char*) concat.c_str(), (char*)0};
@@ -506,7 +506,7 @@ int main(int argc, char const *argv[])
             }
         }// fin else de todo el vergueo
     } // fin while true
-    
+
     return 0;
 }
 
@@ -565,7 +565,7 @@ int mul_pipe(char *s[],int n)
         close(pip[k]);
     for(int k=0;k<2*n-1;k++)
         wait(&status);
-    
+
 }
 //function for input redirection with single pipe
 int input_pipe(char *inred,char *p,char *s[],int n)
@@ -591,7 +591,7 @@ int input_pipe(char *inred,char *p,char *s[],int n)
     {
         pipe(pip+i);
     }
-    
+
     for(int j=0;j<n+1;j++)
     {
         char *t;
@@ -677,7 +677,7 @@ int input_output(char *s1,char *s2,char *s3)
     close(out);
     for (int i = 0; i < 2; i++)
         wait(&status);
-    
+
 }
 //function for single input redirect
 int  single_input_redirect(char *s1,char *s2)
@@ -704,20 +704,20 @@ int  single_input_redirect(char *s1,char *s2)
     in=open(path,O_RDONLY);
     if (fork() == 0)
     {
-        
+
         dup2(in, 0);
         close(in);
         execvp(*argv,argv);
     }
-    
+
     close(in);
-    
-    
-    
+
+
+
     for (int i = 0; i < 1; i++)
         wait(&status);
-    
-    
+
+
 }
 //function with output redirect with pipe
 int out_pipe(char *s[],char *outred,int n)
@@ -761,7 +761,7 @@ int out_pipe(char *s[],char *outred,int n)
             {
                 dup2(pip[2*n-2],0);
                 dup2(out,1);
-                
+
                 for(int k=0;k<2*n;k++)
                     close(pip[k]);
                 close(out);
@@ -782,7 +782,7 @@ int out_pipe(char *s[],char *outred,int n)
     close(out);
     for(int k=0;k<2*n-1;k++)
         wait(&status);
-    
+
 }
 int single_output_redirect(char *s1,char *s2)
 {
@@ -808,11 +808,11 @@ int single_output_redirect(char *s1,char *s2)
         close(out);
         execvp(*argv,argv);
     }
-    
+
     close(out);
     for (int i = 0; i < 1; i++)
         wait(&status);
-    
+
 }
 int input_pipe_output(char *inred,char *p,char *s[],char *outred,int n)
 {
@@ -871,7 +871,7 @@ int input_pipe_output(char *inred,char *p,char *s[],char *outred,int n)
             {
                 dup2(pip[2*n-2],0);
                 dup2(out,1);
-                
+
                 for(int k=0;k<2*n;k++)
                     close(pip[k]);
                 close(out);
@@ -893,7 +893,7 @@ int input_pipe_output(char *inred,char *p,char *s[],char *outred,int n)
     close(out);
     for(int k=0;k<2*n-1;k++)
         wait(&status);
-    
+
 }
 
 bool contains(char* comando, vector<string> listaComandos){
@@ -901,7 +901,7 @@ bool contains(char* comando, vector<string> listaComandos){
         if (!strcmp(comando,listaComandos[i].c_str())){
             return true;
         }
-        
+
     }
     return false;
 }
@@ -911,7 +911,7 @@ bool containsStr(string comando, vector<string> listaComandos){
         if (comando==listaComandos[i]){
             return true;
         }
-        
+
     }
     return false;
 }
