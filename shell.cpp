@@ -20,6 +20,8 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 using namespace std;
 bool contains(char* comando, vector<string> listaComandos);
