@@ -255,7 +255,8 @@ int main(int argc, char const *argv[])
                 }
                 else if(comandosPipe[i]=="cd"){
                     //cambiar de directorio
-                    currentDirectory = "/Users/jmlb/"; //getenv("HOME"); deberia de retornar el home dir, no funciona en macos
+                    currentDirectory = getenv("HOME"); //deberia de retornar el home dir, no funciona en macos
+                    currentDirectory += "/";
                 }else if(substringPipe=="cd"){
                     string carpeta = comandosPipe[i].substr(contp+1,comandosPipe[i].size());
                     if (carpeta == ".."){
@@ -441,7 +442,8 @@ int main(int argc, char const *argv[])
             }
             else if(ingreso=="cd"){
                 //cambiar de directorio
-                currentDirectory = "/Users/jmlb/"; //getenv("HOME"); deberia de retornar el home dir, no funciona en macos
+                currentDirectory = getenv("HOME"); //deberia de retornar el home dir, no funciona en macos
+                currentDirectory += "/";
             }else if(substring=="cd"){
                 string carpeta = ingreso.substr(cont+1,ingreso.size());
                 if (carpeta == ".."){
