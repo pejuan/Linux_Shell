@@ -347,13 +347,41 @@ int main(int argc, char const *argv[])
             }
             else if (substring == "cat")
             {
-                string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
+                string dirName = currentDirectory+ ingreso.substr(cont+1,ingreso.size());
                 char* fileName[] = {(char*) dirName.c_str(), (char*)0};
-                
-                if (!fork()) {
-                    string ejecutable = CDIR;
-                    ejecutable += "/cat";
-                    execv(ejecutable.c_str(),fileName);
+                string verf = ingreso.substr(cont+1,ingreso.size());
+                bool pico = false;
+                bool doblepico = false;
+                for (int k = 0; k < verf.size(); k++){
+                    if (verf[k]=='>' && verf[k+1]== '>')
+                    {
+                        doblepico = true;
+                        break;
+                    }
+                    else if (verf[k]=='>')
+                    {
+                        pico = true;
+                        break;
+                    }
+                }
+                if (doblepico)
+                {
+                /* code */
+                }else if(pico){
+                    if (!fork())
+                    {
+                        string dirNamePico = currentDirectory+"¿"+ ingreso.substr(cont+1,ingreso.size());
+                        char* fileNamePico[] = {(char*) dirNamePico.c_str(), (char*)0};
+                        string ejecutable = CDIR;
+                        ejecutable += "/catPico";
+                        execv(ejecutable.c_str(),fileNamePico);
+                    }
+                }else{
+                    if (!fork()) {
+                        string ejecutable = CDIR;
+                        ejecutable += "/cat";
+                        execv(ejecutable.c_str(),fileName);
+                    }
                 }
                 
             }
