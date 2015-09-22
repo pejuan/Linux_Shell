@@ -30,19 +30,16 @@ int out_pipe(char *s[],char *outred,int n);
 int mul_pipe(char *s[],int n);
 int input_pipe(char *inred,char *p,char *s[],int n);
 int input_output(char *s1,char *s2,char *s3);
-int  single_input_redirect(char *s1,char *s2);
-
+int single_input_redirect(char *s1,char *s2);
 
 char CDIR[1024]; 
 
 int main(int argc, char const *argv[])
 {
-
 	pid_t pid;
 
 	int fd[2];
 	pipe(fd);
-
 	
 	vector<string> listaComandos;
 	bool verificacion = true;
@@ -137,6 +134,17 @@ int main(int argc, char const *argv[])
 			if (!fork()) {
 				string ejecutable = CDIR;
 				ejecutable += "/rmdir";
+				execv(ejecutable.c_str(),fileName);
+			}
+		}
+		else if (substring == "rmDir")
+		{
+			string dirName = currentDirectory + ingreso.substr(cont+1,ingreso.size());
+			char* fileName[] = {(char*) dirName.c_str(), (char*)0};
+			
+			if (!fork()) {
+				string ejecutable = CDIR;
+				ejecutable += "/rmdirR";
 				execv(ejecutable.c_str(),fileName);
 			}
 		}
