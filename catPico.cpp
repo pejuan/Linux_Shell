@@ -42,6 +42,27 @@ int main(int argc, char const *argv[])
 		// the function continues from where it left in previous invocation
 		token2 = strtok(NULL, ">");
 	}
-	cout<<endl<<archivos[0]<<endl<<archivos[1]<<endl;
+
+
+	//char origen[200] = archivos[0].c_str();
+	//char destino[200] = archivos[1].c_str();
+
+	string lineOrigin;
+	string originContent = "";
+	ifstream archivoOrin(archivos[0].c_str());
+	if(archivoOrin.is_open()){
+		while(getline(archivoOrin,lineOrigin)){
+		originContent += lineOrigin += '\n';
+		}
+	}
+
+	ofstream myFileN(archivos[1].c_str(), ios::out);
+	if(myFileN.is_open()){
+		myFileN << originContent << '\n';
+		myFileN.close();
+	}
+
+	originContent = "";
+
 	return 0;
 }
