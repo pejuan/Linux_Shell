@@ -353,7 +353,7 @@ int main(int argc, char const *argv[])
                 bool pico = false;
                 bool doblepico = false;
                 for (int k = 0; k < verf.size(); k++){
-                    if (verf[k]=='>' && verf[k+1]== '>')
+                    if (verf[k]=='>' && verf[k+2]== '>')
                     {
                         doblepico = true;
                         break;
@@ -366,7 +366,11 @@ int main(int argc, char const *argv[])
                 }
                 if (doblepico)
                 {
-                /* code */
+                    string dirNameDPico = currentDirectory+"¿"+ ingreso.substr(cont+1,ingreso.size());
+                    char* fileNameDPico[] = {(char*) dirNameDPico.c_str(), (char*)0};
+                    string ejecutable = CDIR;
+                    ejecutable += "/catDoblePico";
+                    execv(ejecutable.c_str(),fileNameDPico);
                 }else if(pico){
                     if (!fork())
                     {
