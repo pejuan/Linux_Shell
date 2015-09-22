@@ -309,16 +309,26 @@ int main(int argc, char const *argv[])
                     }
                 }
                 else if(substringPipe == "kill"){
-                string procName = comandosPipe[i].substr(8,comandosPipe[i].size());
+                    string procName = comandosPipe[i].substr(8,comandosPipe[i].size());
 
-                char* todo[] = {(char*) procName.c_str(), (char*)0};
-                
-                if (!fork()) {
-                    string ejecutable = CDIR;
-                    ejecutable += "/kill";
-                    execv(ejecutable.c_str(),todo);
+                    char* todo[] = {(char*) procName.c_str(), (char*)0};
+                    
+                    if (!fork()) {
+                        string ejecutable = CDIR;
+                        ejecutable += "/kill";
+                        execv(ejecutable.c_str(),todo);
+                    }
                 }
-            }
+                else if(substringPipe == "ln"){
+                    string link = comandosPipe[i].substr(6,comandosPipe[i].size());
+                    char* todo[] = {(char*) link.c_str(), (char*)0};
+                    
+                    if (!fork()) {
+                        string ejecutable = CDIR;
+                        ejecutable += "/ln";
+                        execv(ejecutable.c_str(),todo);
+                    }
+                }
             } // fin for vergueo pipes
 
             
@@ -502,6 +512,16 @@ int main(int argc, char const *argv[])
                 if (!fork()) {
                     string ejecutable = CDIR;
                     ejecutable += "/kill";
+                    execv(ejecutable.c_str(),todo);
+                }
+            }
+            else if(substring == "ln"){
+                string link = ingreso.substr(6,ingreso.size());
+                char* todo[] = {(char*) link.c_str(), (char*)0};
+                
+                if (!fork()) {
+                    string ejecutable = CDIR;
+                    ejecutable += "/ln";
                     execv(ejecutable.c_str(),todo);
                 }
             }
